@@ -7,6 +7,7 @@ import dev.ankit.productservice.models.Product;
 import dev.ankit.productservice.services.FakeStoreProductService;
 import dev.ankit.productservice.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class ProductController {
 
     private ProductService productService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(@Qualifier("selfProductService") ProductService productService) {
         this.productService = productService;
     }
 
@@ -48,7 +49,8 @@ public class ProductController {
     // Jackson
     @GetMapping("/products/{id}")
     public Product getProductById(@PathVariable("id") Long id) {
-        return productService.getSingleProduct(id);
+        Product product = productService.getSingleProduct(id);
+        return product;
     }
 
     public void deleteProduct(Long id) {
