@@ -5,25 +5,22 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import java.util.List;
 
-@Getter
-@Setter
 @AllArgsConstructor
+@Setter
 @NoArgsConstructor
+@Getter
 @Entity
 public class Category extends BaseModel {
     private String title;
 
     @OneToMany(mappedBy = "category", cascade = {CascadeType.REMOVE}, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SELECT)
     @JsonIgnore
+    @Fetch(FetchMode.SUBSELECT)
     private List<Product> products;
 }

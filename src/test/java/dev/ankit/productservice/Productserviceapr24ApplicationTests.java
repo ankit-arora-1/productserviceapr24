@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
@@ -60,6 +61,20 @@ class Productserviceapr24ApplicationTests {
     public void testingFetchTypes3() {
         Optional<Category> category = categoryRepository.findById(1L);
         System.out.println(category.get().getTitle());
+    }
+
+    @Test
+    @Transactional
+    public void nplus1problem() {
+        // Get all cats and for each cat get the product and
+        // print title of each product
+        List<Category> categories = categoryRepository.findAll();
+        for(Category category: categories) {
+            for(Product product: category.getProducts()) {
+                System.out.println(product.getTitle());
+            }
+        }
+
     }
 
 }
