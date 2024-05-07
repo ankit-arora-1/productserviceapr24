@@ -2,11 +2,12 @@ package dev.ankit.productservice.services;
 
 import dev.ankit.productservice.models.Product;
 import dev.ankit.productservice.repositories.ProductRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SearchService {
@@ -19,6 +20,12 @@ public class SearchService {
     public Page<Product> search(String query, int pageNumber, int pageSize) {
         Sort sort = Sort.by("title").descending()
                 .and(Sort.by("price")).ascending();
+
+//        List<String> sortValues = new ArrayList<>();
+//        for(String sortValue: sortValues) {
+//            sort = Sort.by(sortValue).ascending();
+//        }
+
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         return productRepository.findByTitleContaining(query, pageable);
