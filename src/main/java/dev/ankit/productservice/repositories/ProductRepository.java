@@ -2,6 +2,8 @@ package dev.ankit.productservice.repositories;
 
 import dev.ankit.productservice.models.Product;
 import dev.ankit.productservice.repositories.projections.ProductWithTitleAndId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,4 +31,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("select p.id, p.title from Product p where p.title = :title and p.id = :id")
     ProductWithTitleAndId getProductWithASpecificTitleAndId2(@Param("title") String title, @Param("id") Long id);
 
+    Page<Product> findByTitleContaining(String title, Pageable pageable);
 }
