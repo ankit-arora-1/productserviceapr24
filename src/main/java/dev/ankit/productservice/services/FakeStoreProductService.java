@@ -3,6 +3,7 @@ package dev.ankit.productservice.services;
 import dev.ankit.productservice.dtos.FakeStoreProductDto;
 import dev.ankit.productservice.models.Category;
 import dev.ankit.productservice.models.Product;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -16,9 +17,12 @@ import java.util.List;
 public class FakeStoreProductService implements ProductService{
 
     private RestTemplate restTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
-    public FakeStoreProductService(RestTemplate restTemplate) {
+    public FakeStoreProductService(RestTemplate restTemplate,
+                                   RedisTemplate<String, Object> redisTemplate) {
         this.restTemplate = restTemplate;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -27,6 +31,11 @@ public class FakeStoreProductService implements ProductService{
 //                .getForObject(
 //                        "https://fakestoreapi.com/products/" + id,
 //                        FakeStoreProductDto.class);
+
+        Product productFromCache = (Product) redisTemplate.opsForValue().get(String.valueOf(id));
+        if(productFromCache != null) {
+            return productFromCache;
+        }
 
         ResponseEntity<FakeStoreProductDto> responseEntity = restTemplate.getForEntity(
                 "https://fakestoreapi.com/products/" + id,
@@ -44,6 +53,8 @@ public class FakeStoreProductService implements ProductService{
         Category category = new Category();
         category.setTitle(fakeStoreProductDto.getCategory());
         product.setCategory(category);
+
+        redisTemplate.opsForValue().set(String.valueOf(id), product);
 
         return product;
     }
