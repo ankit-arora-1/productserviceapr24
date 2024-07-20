@@ -3,6 +3,7 @@ package dev.ankit.productservice.controllers;
 import dev.ankit.productservice.dtos.CreateProductRequestDto;
 import dev.ankit.productservice.dtos.ErrorDto;
 import dev.ankit.productservice.dtos.FakeStoreProductDto;
+import dev.ankit.productservice.exceptions.ProductNotFoundException;
 import dev.ankit.productservice.models.Product;
 import dev.ankit.productservice.services.FakeStoreProductService;
 import dev.ankit.productservice.services.ProductService;
@@ -37,7 +38,7 @@ public class ProductController {
     // ResponseEntity contains everything that a response requires:
     // Data, Status code and headers
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public ResponseEntity<List<Product>> getAllProducts() throws ProductNotFoundException  {
         List<Product> responseData = productService.getAllProducts();
 
         ResponseEntity<List<Product>> responseEntity =
