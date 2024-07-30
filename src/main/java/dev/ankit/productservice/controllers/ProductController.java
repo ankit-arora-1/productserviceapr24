@@ -1,8 +1,11 @@
 package dev.ankit.productservice.controllers;
 
+import dev.ankit.productservice.commons.AuthenticationCommons;
 import dev.ankit.productservice.dtos.CreateProductRequestDto;
 import dev.ankit.productservice.dtos.ErrorDto;
 import dev.ankit.productservice.dtos.FakeStoreProductDto;
+import dev.ankit.productservice.dtos.UserDto;
+import dev.ankit.productservice.exceptions.InvalidTokenException;
 import dev.ankit.productservice.exceptions.ProductNotFoundException;
 import dev.ankit.productservice.models.Product;
 import dev.ankit.productservice.services.FakeStoreProductService;
@@ -19,9 +22,12 @@ import java.util.List;
 public class ProductController {
 
     private ProductService productService;
+    private AuthenticationCommons authenticationCommons;
 
-    public ProductController(@Qualifier("fakeStoreService") ProductService productService) {
+    public ProductController(@Qualifier("fakeStoreService") ProductService productService,
+                             AuthenticationCommons authenticationCommons) {
         this.productService = productService;
+        this.authenticationCommons = authenticationCommons;
     }
 
     @PostMapping("/products")
@@ -49,7 +55,12 @@ public class ProductController {
 
     // Jackson
     @GetMapping("/products/{id}")
-    public Product getProductById(@PathVariable("id") Long id) {
+    public Product getProductById(@PathVariable("id") Long id, @RequestHeader("Authorization") String token) throws InvalidTokenException {
+        UserDto userDto = authenticationCommons.validateToken(token);
+        if(userDto == null) {
+            throw new InvalidTokenException("Invalid token");
+        }
+
         Product product = productService.getSingleProduct(id);
         return product;
     }
