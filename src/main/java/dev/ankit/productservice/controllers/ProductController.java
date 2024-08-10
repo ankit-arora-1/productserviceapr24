@@ -24,7 +24,7 @@ public class ProductController {
     private ProductService productService;
     private AuthenticationCommons authenticationCommons;
 
-    public ProductController(@Qualifier("fakeStoreService") ProductService productService,
+    public ProductController(@Qualifier("selfProductService") ProductService productService,
                              AuthenticationCommons authenticationCommons) {
         this.productService = productService;
         this.authenticationCommons = authenticationCommons;
@@ -67,6 +67,11 @@ public class ProductController {
 
     public void deleteProduct(Long id) {
 
+    }
+
+    @RequestMapping("ANKIT")
+    public void test() {
+        System.out.println("Called");
     }
 
 //    @ExceptionHandler(NullPointerException.class)
